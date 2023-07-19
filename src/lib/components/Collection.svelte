@@ -3,7 +3,7 @@
   import { getCollection } from '$lib/util/collection';
   import { writable } from 'svelte/store';
   
-  let observer: IntersectionObserver;
+  let observer: IntersectionObserver | null = null;
   interface CollectionItem {
     name: string;
     image: string;
@@ -19,22 +19,26 @@
   onMount(loadCollection);
 
   afterUpdate(() => {
-    const images = document.querySelectorAll('.lazy');
-    images.forEach(image => {
-      observer.observe(image);
-    });
+    if (typeof window !== 'undefined' && observer) {
+      const images = document.querySelectorAll('.lazy');
+      images.forEach(image => {
+        observer?.observe(image);
+      });
+    }
   });
 
-  observer = new IntersectionObserver(entries => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        const lazyImage = entry.target as HTMLImageElement;
-        lazyImage.src = lazyImage.dataset.src as string;
-        lazyImage.classList.remove('lazy');
-        observer.unobserve(lazyImage);
-      }
+  if (typeof window !== 'undefined') {
+    observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const lazyImage = entry.target as HTMLImageElement;
+          lazyImage.src = lazyImage.dataset.src as string;
+          lazyImage.classList.remove('lazy');
+          observer?.unobserve(lazyImage);
+        }
+      });
     });
-  });
+  }
   
   onDestroy(() => {
     if (observer) {
