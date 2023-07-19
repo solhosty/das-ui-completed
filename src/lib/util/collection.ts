@@ -9,7 +9,7 @@ export async function getCollection() {
 	let results = [];
 	let page = 1;
 		try {
-            const helius = new Helius('2ee657db-a88e-4bc2-9470-61b5c328b310');
+            const helius = new Helius('834b2510-9770-4266-b01e-85943e500692');
 			const response = await helius.rpc.getAssetsByGroup({
 				groupKey: 'collection',
 				groupValue: '8Rt3Ayqth4DAiPnW9MDFi63TiQJHmohfTWLMQFHi4KZH',
